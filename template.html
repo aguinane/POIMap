@@ -21,22 +21,22 @@
 
     <div class="container">
         <div class="row">
-          <div class="col-8">
-               <div id="mapid" style="width: 100%; height: 600px;"></div>
+            <div class="col-8">
+                <div id="mapid" style="width: 100%; height: 600px;"></div>
             </div>
-          <div class="col-4">
-            {% for poi in pois %}
-            {% set poinum = loop.index0+1  %}
+            <div class="col-4">
+                {% for poi in pois %}
+                {% set poinum = loop.index0+1 %}
 
-            <strong>{{poinum}}</strong> {{poi.label}} 
-            {% if poi.desc %}| <small>{{poi.desc}}</small>{% endif %}
-            <br>
-            
+                <strong>{{poinum}}</strong> {{poi.label}}
+                {% if poi.desc %}| <small>{{poi.desc}}</small>{% endif %}
+                <br>
 
-            {% endfor %}
-          </div>
+
+                {% endfor %}
+            </div>
         </div>
-      </div>
+    </div>
 
 
     <!-- Make sure you put this AFTER Leaflet's CSS -->
@@ -49,55 +49,60 @@
 
     <script>
 
-        var map = L.map('mapid').setView([{{here[0]}}, {{here[1]}}], 15);
+        var x = {{ here[0]}}
+        var y = {{ here[1]}}
+        var map = L.map('mapid').setView([x, y], 15);
 
         // add an OpenStreetMap tile layer
         var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         });
-        var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            subdomains: 'abcd',
-            minZoom: 0,
-            maxZoom: 20,
-            ext: 'png'
+        var OPNVKarte = L.tileLayer('https://tileserver.memomaps.de/tilegen/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'Map <a href="https://memomaps.de/">memomaps.de</a> <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
-        var Stamen_Water = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            subdomains: 'abcd',
-            minZoom: 0,
+        var CyclOSM = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
             maxZoom: 20,
-            ext: 'png'
+            attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        });
+        var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         });
 
         map.addLayer(osm);
 
         var baseMaps = {
-        "OpenStreetMap": osm,
-        "Stamen Toner": Stamen_Toner,
-        "Stamen WaterColor": Stamen_Water,
+            "OpenStreetMap": osm,
+            "OPNVKarte": OPNVKarte,
+            "CyclOSM": CyclOSM,
+            "OpenTopoMap": OpenTopoMap,
+            "Esri_WorldImagery": Esri_WorldImagery,
         };
 
         // Add control menu for base and overlay layers
-        L.control.layers(baseMaps,null,{position: 'topleft'}).addTo(map);
+        L.control.layers(baseMaps, null, { position: 'topleft' }).addTo(map);
 
         var hereIcon = L.icon({
             iconUrl: 'http://maps.google.com/mapfiles/kml/pal3/icon23.png',
-            iconSize:     [20, 20]
-            });
-        var markerHere = L.marker([{{here[0]}}, {{here[1]}}], {icon: hereIcon}).addTo(map).bindPopup("You Are Here");
+            iconSize: [20, 20]
+        });
+        var markerHere = L.marker([x, y], { icon: hereIcon }).addTo(map).bindPopup("You Are Here");
 
 
         {% for poi in pois %}
-        {% set poinum = loop.index0+1  %}
-        {% set label = poi.label  %}
-        {% set lon = poi.coords[0]  %}
-        {% set lat = poi.coords[1]  %}
+        {% set poinum = loop.index0 + 1 %}
+        {% set label = poi.label %}
+        {% set lon = poi.coords[0] %}
+        {% set lat = poi.coords[1] %}
         var poi{{ poinum }}Icon = L.icon({
             iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/{{ poinum }}-lv.png',
-            iconSize:     [16, 16]
-            });
-        var marker{{ poinum }} = L.marker([{{lon}}, {{lat}}], {icon: poi{{ poinum }}Icon}).addTo(map).bindPopup("{{label}}");
+            iconSize: [16, 16]
+        });
+        var marker{{ poinum }} = L.marker([{{ lon }}, {{ lat }}], { icon: poi{{ poinum }}Icon}).addTo(map).bindPopup("{{label}}");
         {% endfor %}
 
 
