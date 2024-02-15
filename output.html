@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+
+    <title>Hoepper Towers</title>
+</head>
+
+<body>
+    <h1>Hoepper Towers</h1>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div id="mapid" style="width: 100%; height: 600px;"></div>
+            </div>
+            <div class="col-4">
+                
+                
+
+                <strong>1</strong> Westridge Shops
+                | <small>Dominoes / BWS / Post Office</small>
+                <br>
+
+
+                
+                
+
+                <strong>2</strong> The Intersection
+                
+                <br>
+
+
+                
+                
+
+                <strong>3</strong> Springs Early Education
+                
+                <br>
+
+
+                
+                
+
+                <strong>4</strong> Curry 'n' Spice
+                
+                <br>
+
+
+                
+                
+
+                <strong>5</strong> Toowoomba Plaza
+                | <small>Kmart / Coles</small>
+                <br>
+
+
+                
+                
+
+                <strong>6</strong> The Ridge
+                | <small>Woolworths / Aldi</small>
+                <br>
+
+
+                
+                
+
+                <strong>7</strong> Miniature Railway
+                
+                <br>
+
+
+                
+                
+
+                <strong>8</strong> BMS Mitre10
+                
+                <br>
+
+
+                
+                
+
+                <strong>9</strong> Tower Shopping Village
+                
+                <br>
+
+
+                
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <script>
+
+        var x = -27.586932
+        var y = 151.941984
+        var map = L.map('mapid').setView([x, y], 15);
+
+        // add an OpenStreetMap tile layer
+        var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        });
+        var OPNVKarte = L.tileLayer('https://tileserver.memomaps.de/tilegen/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'Map <a href="https://memomaps.de/">memomaps.de</a> <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        var CyclOSM = L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+            maxZoom: 20,
+            attribution: '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        });
+        var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        map.addLayer(osm);
+
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "OPNVKarte": OPNVKarte,
+            "CyclOSM": CyclOSM,
+            "OpenTopoMap": OpenTopoMap,
+            "Esri_WorldImagery": Esri_WorldImagery,
+        };
+
+        // Add control menu for base and overlay layers
+        L.control.layers(baseMaps, null, { position: 'topleft' }).addTo(map);
+
+        var hereIcon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/pal3/icon23.png',
+            iconSize: [20, 20]
+        });
+        var markerHere = L.marker([x, y], { icon: hereIcon }).addTo(map).bindPopup("You Are Here");
+
+
+        
+        
+        
+        
+        
+        var poi1Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/1-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker1 = L.marker([-27.58946, 151.93888], { icon: poi1Icon}).addTo(map).bindPopup("Westridge Shops");
+        
+        
+        
+        
+        
+        var poi2Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/2-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker2 = L.marker([-27.5848, 151.94923], { icon: poi2Icon}).addTo(map).bindPopup("The Intersection");
+        
+        
+        
+        
+        
+        var poi3Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/3-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker3 = L.marker([-27.58924, 151.94741], { icon: poi3Icon}).addTo(map).bindPopup("Springs Early Education");
+        
+        
+        
+        
+        
+        var poi4Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/4-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker4 = L.marker([-27.59464, 151.947218], { icon: poi4Icon}).addTo(map).bindPopup("Curry 'n' Spice");
+        
+        
+        
+        
+        
+        var poi5Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/5-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker5 = L.marker([-27.5943535, 151.94852644], { icon: poi5Icon}).addTo(map).bindPopup("Toowoomba Plaza");
+        
+        
+        
+        
+        
+        var poi6Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/6-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker6 = L.marker([-27.594725, 151.951733], { icon: poi6Icon}).addTo(map).bindPopup("The Ridge");
+        
+        
+        
+        
+        
+        var poi7Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/7-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker7 = L.marker([-27.594814, 151.943979], { icon: poi7Icon}).addTo(map).bindPopup("Miniature Railway");
+        
+        
+        
+        
+        
+        var poi8Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/8-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker8 = L.marker([-27.59164, 151.935561], { icon: poi8Icon}).addTo(map).bindPopup("BMS Mitre10");
+        
+        
+        
+        
+        
+        var poi9Icon = L.icon({
+            iconUrl: 'http://maps.google.com/mapfiles/kml/paddle/9-lv.png',
+            iconSize: [16, 16]
+        });
+        var marker9 = L.marker([-27.581355, 151.934019], { icon: poi9Icon}).addTo(map).bindPopup("Tower Shopping Village");
+        
+
+
+    </script>
+</body>
+
+</html>
